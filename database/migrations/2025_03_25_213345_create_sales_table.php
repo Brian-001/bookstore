@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
-            $table->decimal('invoice_number');
+            $table->string('invoice_number')->unique();
             $table->string('customer_name');
-            $table->float('total');
-            $table->date_create('sale_date');
+            $table->decimal('total');
+            $table->date('sale_date');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
