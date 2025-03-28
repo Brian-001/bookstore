@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\V1;
 
+
+use App\Http\Controllers\Controller;
 use App\Models\Book;
+use App\Models\Category;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -30,6 +33,18 @@ class BookController extends Controller
         return Inertia::render('Books/Index', ['books' => $books]);
     }
 
+    public function create(Request $request)
+    {
+        $categories = Category::all();
+
+        if ($request->wantsJson()) {
+            return response()->json(['categories' => $categories]);
+        }
+
+        return Inertia::render('Books/Create', [
+            'categories' => $categories,
+        ]);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -50,7 +65,7 @@ class BookController extends Controller
 
         return $request->wantsJson()
         ? response()->json($book, 201)
-        : redirect()->route('books.index')->with('success', 'Book created successfully');
+        : redirect()->route('api.v1.books.index')->with('success', 'Book created successfully');
     }
 
     /**
@@ -63,6 +78,19 @@ class BookController extends Controller
         : Inertia::render('Books/Show', ['book' => $book->load('category')]);
     }
 
+    public function edit(Request $request, Book $book)
+    {
+        $categories = Category::all();
+
+        if ($request->wantsJson()) {
+            return response()->json(['book' => $book, 'categories' => $categories]);
+        }
+
+        return Inertia::render('Books/Edit', [
+            'book' => $book,
+            'categories' => $categories,
+        ]);
+    }
     
 
     /**
@@ -90,7 +118,7 @@ class BookController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Book $book)
     {
         
         $book->delete();
