@@ -30,7 +30,7 @@ class BookController extends Controller
             return response()->json($books);
         }
 
-        return Inertia::render('Books/Index', ['books' => $books]);
+        return Inertia::render('Books/Index', ['books' => $books, 'filters' => $request->only(['search']),]);
     }
 
     public function create(Request $request)
@@ -112,7 +112,7 @@ class BookController extends Controller
 
         return $request->wantsJson()
             ? response()->json($book)
-            : redirect()->route('books.index')->with('success', 'Book updated successfully');
+            : redirect()->route('api.v1.books.index')->with('success', 'Book updated successfully');
     }
 
     /**
@@ -125,6 +125,6 @@ class BookController extends Controller
 
         return request()->wantsJson()
             ? response()->json(null, 204)
-            : redirect()->route('books.index')->with('success', 'Book deleted successfully');
+            : redirect()->route('api.v1.books.index')->with('success', 'Book deleted successfully');
     }
 }
